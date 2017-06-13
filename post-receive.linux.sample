@@ -2,7 +2,7 @@
 PREFIX="deploy.XXXX"
 TEMP="/var/www/tmp"
 TEMPDIR=`mktemp -d --tmpdir=$TEMP -t ${PREFIX}`
-OUTPUTDIR="/var/www/html/integracao"
+OUTPUTDIR="/var/www/apps/integracao"
 REPODIR="/var/www/git/integracao.git"
 COMPOSER="/usr/local/bin/composer"
 

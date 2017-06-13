@@ -9,7 +9,11 @@ sudo service apache2 restart
 sudo -u www-data mkdir /var/www/.composer > /dev/null 2>&1
 sudo -u www-data mkdir /var/www/tmp
 sudo -u www-data mkdir /var/www/git
-sudo -u www-data mkdir /var/www/html/integracao
+sudo -u www-data mkdir /var/www/apps
+sudo -u www-data mkdir /var/www/apps/integracao
+
+# Criar link simbolico da pasta publica do laravel para www/html/integracao
+sudo -u www-data ln -s /var/www/apps/integracao/public /var/www/html/integracao
 
 # Criar repositorio
 sudo -u www-data git init --bare --shared /var/www/git/integracao.git
