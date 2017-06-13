@@ -6,7 +6,7 @@ sudo cp git.conf.sample /etc/apache2/mods-enabled/git.conf
 sudo service apache2 restart
 
 # Criar pastas
-sudo -u www-data mkdir /var/www/.composer
+sudo -u www-data mkdir /var/www/.composer > /dev/null 2>&1
 sudo -u www-data mkdir /var/www/tmp
 sudo -u www-data mkdir /var/www/git
 sudo -u www-data mkdir /var/www/html/integracao
