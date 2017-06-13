@@ -1,0 +1,78 @@
+#!/bin/bash
+PREFIX="deploy.XXXX"
+TEMP="/home/dnasoft/tmp"
+TEMPDIR=`mktemp -d --tmpdir=$TEMP -t ${PREFIX}`
+OUTPUTDIR="/home/dnasoft/apps/integracao"
+REPODIR="/home/dnasoft/repositorios/integracao.git"
+COMPOSER="/usr/local/php/5.6/bin/php -d memory_limit=-1 /home/dnasoft/composer.phar"
+
+chmod 777 $TEMPDIR
+chmod 777 $OUTPUTDIR
+chmod 777 $REPODIR
+
+while read oldrev newrev refname
+do
+  # Do something with $oldrev $newrev $refname 
+  if [[ $refname =~ .*/master$ ]];
+  then
+	git --work-tree=$TEMPDIR --git-dir=$REPODIR checkout -f
+	git --work-tree=$TEMPDIR --git-dir=$REPODIR update-ref $refname $oldrev
+
+	echo "--------------------------------------------------------------"
+	echo "Master ref received.  Deploying master branch to production..."
+	echo "--------------------------------------------------------------"
+	echo "PHP Application Deploy Hook"
+	echo "--------------------------------------------------------------"
+
+	cd $TEMPDIR
+        COMPOSERJSON=$(find -name "composer.json" -not -path "./vendor/*" -not -path "./node_modules/*" -print0)
+
+        if [[ $COMPOSERJSON == "./composer.json" ]];
+        then
+			echo "Composer detected, resolving dependencies..."
+			echo "--------------------------------------------------------------"
+
+			$COMPOSER update -d $TEMPDIR
+
+			echo "--------------------------------------------------------------"
+			echo "Done."
+			echo "--------------------------------------------------------------"
+			echo "Running Test Script..."
+			echo "--------------------------------------------------------------"
+
+			$COMPOSER test -d $TEMPDIR
+
+			if [ $? -ne 0 ];
+			then
+				TESTRUN="FAIL"
+			else
+				TESTRUN="OK"
+			fi
+
+			echo "--------------------------------------------------------------"
+			echo "Done."
+			echo "--------------------------------------------------------------"
+			if [[ $TESTRUN == "FAIL" ]]; then
+				echo "Test failed, look at up the code and fix it."
+				echo "Rolled back to last commit: $oldrev."
+				git --work-tree=$TEMPDIR --git-dir=$REPODIR update-ref $refname $oldrev
+				rm -rf $TEMPDIR
+			else
+				echo "Deployed with successfully."
+				git --work-tree=$TEMPDIR --git-dir=$REPODIR update-ref $refname $newrev
+				rm -rf $OUTPUTDIR
+				mv $TEMPDIR $OUTPUTDIR
+			fi
+        else
+			echo "Can't find Composer file."
+			echo "Skipping test and dependencies resolve steps."
+			
+			git --work-tree=$TEMPDIR --git-dir=$REPODIR update-ref $refname $newrev
+			rm -rf $OUTPUTDIR
+			mv $TEMPDIR $OUTPUTDIR
+        fi
+
+        echo "--------------------------------------------------------------"
+		echo "Finsh."
+	fi
+done
