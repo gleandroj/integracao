@@ -21,7 +21,7 @@ do
 	echo "--------------------------------------------------------------"
 	echo "Master ref received.  Deploying master branch to production..."
 	echo "--------------------------------------------------------------"
-	echo "PHP Application Deploy Hook"
+	echo "PHP Application Deploy Hook. (By Gleandroj)"
 	echo "--------------------------------------------------------------"
 
 	cd $TEMPDIR
@@ -73,6 +73,6 @@ do
         fi
 
         echo "--------------------------------------------------------------"
-		echo "Finsh."
+	echo "Finsh."
 	fi
 done
