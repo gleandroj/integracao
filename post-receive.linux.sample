@@ -1,10 +1,10 @@
 #!/bin/bash
 PREFIX="deploy.XXXX"
-TEMP="/home/dnasoft/tmp"
+TEMP="/var/www/tmp"
 TEMPDIR=`mktemp -d --tmpdir=$TEMP -t ${PREFIX}`
-OUTPUTDIR="/home/dnasoft/apps/integracao"
-REPODIR="/home/dnasoft/repositorios/integracao.git"
-COMPOSER="/usr/local/php/5.6/bin/php -d memory_limit=-1 /home/dnasoft/composer.phar"
+OUTPUTDIR="/var/www/html/integracao"
+REPODIR="/var/www/git/integracao.git"
+COMPOSER="/usr/local/bin/composer"
 
 chmod 777 $TEMPDIR
 chmod 777 $OUTPUTDIR
@@ -21,7 +21,7 @@ do
 	echo "--------------------------------------------------------------"
 	echo "Master ref received.  Deploying master branch to production..."
 	echo "--------------------------------------------------------------"
-	echo "PHP Application Deploy Hook"
+	echo "PHP Application Deploy Hook. (By Gleandroj)"
 	echo "--------------------------------------------------------------"
 
 	cd $TEMPDIR
@@ -73,6 +73,6 @@ do
         fi
 
         echo "--------------------------------------------------------------"
-		echo "Finsh."
+	echo "Finsh."
 	fi
 done

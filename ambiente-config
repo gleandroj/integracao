@@ -1,0 +1,19 @@
+#!/bin/bash
+# Configuração do Ambiente
+
+# Configurar apache
+sudo cp git.conf.sample /etc/apache2/mods-enabled/git.conf
+sudo service apache2 restart
+
+# Criar pastas
+sudo -u www-data mkdir /var/www/.composer > /dev/null 2>&1
+sudo -u www-data mkdir /var/www/tmp
+sudo -u www-data mkdir /var/www/git
+sudo -u www-data mkdir /var/www/html/integracao
+
+# Criar repositorio
+sudo -u www-data git init --bare --shared /var/www/git/integracao.git
+
+# Adicionar Hook
+sudo -u www-data cp post-receive.linux.sample /var/www/git/integracao.git/hooks/post-receive
+sudo -u www-data chmod 777 /var/www/git/integracao.git/hooks/*
