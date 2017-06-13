@@ -2,7 +2,8 @@
 # Configuração do Ambiente
 
 # Configurar apache
-sudo -u www-data cp git.conf.sample /etc/apache2/mods-enabled/git.conf
+sudo cp git.conf.sample /etc/apache2/mods-enabled/git.conf
+sudo service apache2 restart
 
 # Criar pastas
 sudo -u www-data mkdir /var/www/.composer
